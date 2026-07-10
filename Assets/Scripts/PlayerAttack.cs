@@ -8,6 +8,7 @@ public class PlayerAttack : MonoBehaviour
     public Transform visual;
     public float attackDistance = 1.2f;
     public float attackRadius = 0.8f;
+    public float stunDamage = 20f;
 
     [Header("Attack Motion")]
     public Transform body;
@@ -57,6 +58,14 @@ public class PlayerAttack : MonoBehaviour
             {
                 hitReaction.PlayHitReaction();
             }
+
+            StunController stunController =
+                hitCollider.GetComponent<StunController>();
+
+            if (stunController != null)
+            {
+                stunController.AddStun(stunDamage);
+            }
         }
     }
 
@@ -80,7 +89,6 @@ public class PlayerAttack : MonoBehaviour
             originalBodyRotation * Quaternion.Euler(leanAngle, 0f, 0f);
 
         float halfDuration = motionDuration / 2f;
-
         float elapsedTime = 0f;
 
         while (elapsedTime < halfDuration)
