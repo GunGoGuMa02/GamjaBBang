@@ -17,6 +17,7 @@ public class PlayerAttack : MonoBehaviour
 
     private Quaternion originalBodyRotation;
     private Coroutine attackMotionCoroutine;
+    private StunController stunController;
 
     private void Start()
     {
@@ -24,11 +25,16 @@ public class PlayerAttack : MonoBehaviour
         {
             originalBodyRotation = body.localRotation;
         }
+
+        stunController = GetComponent<StunController>();
     }
 
     private void Update()
     {
         if (Keyboard.current == null)
+            return;
+
+        if (stunController != null && stunController.isStunned)
             return;
 
         if (Keyboard.current.jKey.wasPressedThisFrame)
@@ -51,6 +57,9 @@ public class PlayerAttack : MonoBehaviour
 
         foreach (Collider hitCollider in hitColliders)
         {
+            if (hitCollider.transform.root == transform.root)
+                continue;
+
             HitReaction hitReaction =
                 hitCollider.GetComponent<HitReaction>();
 
@@ -59,12 +68,12 @@ public class PlayerAttack : MonoBehaviour
                 hitReaction.PlayHitReaction();
             }
 
-            StunController stunController =
+            StunController targetStunController =
                 hitCollider.GetComponent<StunController>();
 
-            if (stunController != null)
+            if (targetStunController != null)
             {
-                stunController.AddStun(stunDamage);
+                targetStunController.AddStun(stunDamage);
             }
         }
     }

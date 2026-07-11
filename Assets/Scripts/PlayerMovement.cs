@@ -10,14 +10,22 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
     private Vector2 moveInput;
+    private StunController stunController;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        stunController = GetComponent<StunController>();
     }
 
     void Update()
     {
+        if (stunController != null && stunController.isStunned)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         float horizontal = 0f;
         float vertical = 0f;
 
@@ -46,6 +54,17 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (stunController != null && stunController.isStunned)
+        {
+            rb.linearVelocity = new Vector3(
+                0f,
+                rb.linearVelocity.y,
+                0f
+            );
+
+            return;
+        }
+
         Vector3 moveVelocity = new Vector3(
             moveInput.x,
             0f,
