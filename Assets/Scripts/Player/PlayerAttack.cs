@@ -64,26 +64,55 @@ public class PlayerAttack : MonoBehaviour
                 attackRadius
             );
 
-        // 대상에게 Collider가 여러 개 있어도
-        // 한 번의 공격으로 한 번만 맞게 한다.
-        HashSet<Transform> processedTargets =
+        HashSet<Transform> processedPlayerTargets =
             new HashSet<Transform>();
+
+        HashSet<ClawStunController> processedClawTargets =
+            new HashSet<ClawStunController>();
 
         foreach (Collider hitCollider in hitColliders)
         {
+            if (hitCollider == null)
+                continue;
+
+            ClawStunController clawStunController =
+                hitCollider.GetComponentInParent<ClawStunController>();
+
+            if (clawStunController != null)
+            {
+                if (!processedClawTargets.Contains(clawStunController))
+                {
+                    processedClawTargets.Add(clawStunController);
+
+                    clawStunController.AddStun(
+                        stunDamage
+                    );
+
+                    Debug.Log(
+                        $"{gameObject.name}이 집게를 공격했습니다."
+                    );
+                }
+
+                continue;
+            }
+
+            PlayerIdentity targetIdentity =
+                hitCollider.GetComponentInParent<PlayerIdentity>();
+
+            if (targetIdentity == null)
+                continue;
+
             Transform targetRoot =
-                hitCollider.transform.root;
+                targetIdentity.transform;
 
-            // 자기 자신은 공격 대상에서 제외한다.
-            if (targetRoot == transform.root)
+            if (targetRoot == transform)
                 continue;
 
-            if (processedTargets.Contains(targetRoot))
+            if (processedPlayerTargets.Contains(targetRoot))
                 continue;
 
-            processedTargets.Add(targetRoot);
+            processedPlayerTargets.Add(targetRoot);
 
-            // 공격자에서 피격자를 향하는 수평 방향
             Vector3 hitDirection =
                 targetRoot.position - transform.position;
 
@@ -97,7 +126,6 @@ public class PlayerAttack : MonoBehaviour
 
             hitDirection.Normalize();
 
-            // 기존 방향별 피격 모션
             HitReaction hitReaction =
                 targetRoot.GetComponent<HitReaction>();
 
@@ -108,7 +136,6 @@ public class PlayerAttack : MonoBehaviour
                 );
             }
 
-            // 실제 넉백
             PlayerMovement targetMovement =
                 targetRoot.GetComponent<PlayerMovement>();
 
@@ -119,14 +146,7 @@ public class PlayerAttack : MonoBehaviour
                     knockbackStrength
                 );
             }
-            else
-            {
-                Debug.LogWarning(
-                    $"{targetRoot.name}에서 PlayerMovement를 찾지 못했습니다."
-                );
-            }
 
-            // 기존 기절 수치 증가
             StunController targetStunController =
                 targetRoot.GetComponent<StunController>();
 

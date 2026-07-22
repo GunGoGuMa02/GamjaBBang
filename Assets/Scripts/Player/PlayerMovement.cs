@@ -17,19 +17,26 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Vector2 moveInput;
 
-    // 공격으로 받은 추가 이동 속도
     private Vector3 knockbackVelocity;
 
     private StunController stunController;
+    private PlayerGrabController grabController;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         stunController = GetComponent<StunController>();
+        grabController = GetComponent<PlayerGrabController>();
     }
 
     private void Update()
     {
+        if (grabController != null && grabController.isGrabbed)
+        {
+            moveInput = Vector2.zero;
+            return;
+        }
+
         if (stunController != null && stunController.isStunned)
         {
             moveInput = Vector2.zero;
@@ -57,17 +64,24 @@ public class PlayerMovement : MonoBehaviour
         if (Keyboard.current.wKey.isPressed)
             vertical += 1f;
 
-        moveInput = new Vector2(horizontal, vertical).normalized;
+        moveInput = new Vector2(
+            horizontal,
+            vertical
+        ).normalized;
 
         RotateVisual();
     }
 
     private void FixedUpdate()
     {
+        if (grabController != null && grabController.isGrabbed)
+        {
+            knockbackVelocity = Vector3.zero;
+            return;
+        }
+
         Vector3 moveVelocity = Vector3.zero;
 
-        // 기절 중에는 입력 이동만 막는다.
-        // 넉백은 기절 여부와 관계없이 계속 적용된다.
         if (stunController == null || !stunController.isStunned)
         {
             moveVelocity = new Vector3(
@@ -86,7 +100,6 @@ public class PlayerMovement : MonoBehaviour
             finalVelocity.z
         );
 
-        // 넉백 속도를 매 물리 프레임 조금씩 줄인다.
         knockbackVelocity = Vector3.MoveTowards(
             knockbackVelocity,
             Vector3.zero,
@@ -120,6 +133,9 @@ public class PlayerMovement : MonoBehaviour
 
     public void AddKnockback(Vector3 direction, float strength)
     {
+        if (grabController != null && grabController.isGrabbed)
+            return;
+
         direction.y = 0f;
 
         if (direction.sqrMagnitude <= 0.001f)
@@ -129,7 +145,6 @@ public class PlayerMovement : MonoBehaviour
 
         knockbackVelocity += direction * strength;
 
-        // 기능 확인용 로그다.
         Debug.Log(
             $"{gameObject.name} 넉백 적용 / 세기: {strength}"
         );
