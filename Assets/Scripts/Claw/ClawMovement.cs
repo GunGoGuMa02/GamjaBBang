@@ -51,6 +51,14 @@ public class ClawMovement : MonoBehaviour
     private Coroutine movementCoroutine;
     private bool isMoving;
 
+    public bool IsMoving
+    {
+        get
+        {
+            return isMoving;
+        }
+    }
+
     private void Start()
     {
         startPosition = transform.position;
@@ -85,10 +93,7 @@ public class ClawMovement : MonoBehaviour
 
         if (targetZone == null)
         {
-            Debug.LogWarning(
-                $"{gameObject.name}: Target Zone이 연결되지 않았습니다."
-            );
-
+            Debug.LogWarning($"{gameObject.name}: Target Zone이 연결되지 않았습니다.");
             return;
         }
 
@@ -109,7 +114,6 @@ public class ClawMovement : MonoBehaviour
 
         yield return new WaitForSeconds(waitBeforeDescending);
 
-        // 1. 집게가 목표 위치로 내려감
         yield return MoveToPosition(
             bottomPosition,
             descendingSpeed
@@ -117,21 +121,17 @@ public class ClawMovement : MonoBehaviour
 
         Debug.Log("집게가 아래 위치에 도착했습니다.");
 
-        // 2. 아래에서 포획 판정 ON
         if (grabTrigger != null)
         {
             grabTrigger.EnableGrab();
         }
         else
         {
-            Debug.LogWarning(
-                $"{gameObject.name}: Grab Trigger가 연결되지 않았습니다."
-            );
+            Debug.LogWarning($"{gameObject.name}: Grab Trigger가 연결되지 않았습니다.");
         }
 
         yield return new WaitForSeconds(waitAtBottom);
 
-        // 3. 포획 판정 OFF
         if (grabTrigger != null)
         {
             grabTrigger.DisableGrab();
@@ -141,7 +141,6 @@ public class ClawMovement : MonoBehaviour
             grabTrigger != null &&
             grabTrigger.HasGrabbedPlayer;
 
-        // 4. 일단 위로 올라감
         Vector3 upperPosition = new Vector3(
             transform.position.x,
             startPosition.y,
@@ -153,7 +152,6 @@ public class ClawMovement : MonoBehaviour
             ascendingSpeed
         );
 
-        // 5. 잡은 플레이어가 있으면 DropHole 위로 이동해서 놓음
         if (caughtPlayer)
         {
             yield return MoveToDropHoleAndRelease();
@@ -163,7 +161,6 @@ public class ClawMovement : MonoBehaviour
             Debug.Log("집게가 아무도 잡지 못했습니다.");
         }
 
-        // 6. 원래 대기 위치로 복귀
         yield return MoveToPosition(
             startPosition,
             horizontalMoveSpeed
@@ -179,9 +176,7 @@ public class ClawMovement : MonoBehaviour
     {
         if (dropPoint == null)
         {
-            Debug.LogWarning(
-                $"{gameObject.name}: DropPoint가 연결되지 않았습니다. 잡은 플레이어를 현재 위치에서 놓습니다."
-            );
+            Debug.LogWarning($"{gameObject.name}: DropPoint가 연결되지 않았습니다. 잡은 플레이어를 현재 위치에서 놓습니다.");
 
             if (grabTrigger != null)
             {
@@ -221,10 +216,7 @@ public class ClawMovement : MonoBehaviour
     {
         if (moveSpeed <= 0f)
         {
-            Debug.LogWarning(
-                $"{gameObject.name}: 이동 속도는 0보다 커야 합니다."
-            );
-
+            Debug.LogWarning($"{gameObject.name}: 이동 속도는 0보다 커야 합니다.");
             yield break;
         }
 
