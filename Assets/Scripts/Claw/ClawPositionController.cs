@@ -13,6 +13,19 @@ public class ClawPositionController : MonoBehaviour
     [Tooltip("집게 아래의 감지 구역 오브젝트입니다.")]
     public Transform targetZone;
 
+    [Header("Lever Visuals")]
+    [Tooltip("좌우 이동 레버의 회전 중심입니다.")]
+    public Transform horizontalLeverPivot;
+
+    [Tooltip("앞뒤 이동 레버의 회전 중심입니다.")]
+    public Transform verticalLeverPivot;
+
+    [Tooltip("레버가 최대로 기울어지는 각도입니다.")]
+    public float leverTiltAngle = 25f;
+
+    [Tooltip("레버가 목표 각도로 움직이는 속도입니다.")]
+    public float leverReturnSpeed = 10f;
+
     [Header("Movement")]
     [Tooltip("집게가 좌우/앞뒤로 이동하는 속도입니다.")]
     public float moveSpeed = 3f;
@@ -33,47 +46,67 @@ public class ClawPositionController : MonoBehaviour
     [Tooltip("TargetZone의 Y 위치입니다. 바닥 근처 높이로 유지합니다.")]
     public float targetZoneY = 0.05f;
 
+    private float horizontalInput;
+    private float verticalInput;
+
     private void Update()
     {
+        horizontalInput = 0f;
+        verticalInput = 0f;
+
         if (claw == null)
             return;
 
         if (Keyboard.current == null)
             return;
 
-        if (clawMovement != null && clawMovement.IsMoving)
+        bool canMoveClaw =
+            clawMovement == null ||
+            clawMovement.IsMoving == false;
+
+        if (canMoveClaw)
         {
-            UpdateTargetZonePosition();
-            return;
+            ReadKeyboardInput();
+            MoveClaw();
         }
 
-        Vector3 moveDirection = Vector3.zero;
+        UpdateTargetZonePosition();
+        UpdateLeverVisuals();
+    }
 
+    private void ReadKeyboardInput()
+    {
         if (Keyboard.current.jKey.isPressed)
         {
-            moveDirection.x -= 1f;
+            horizontalInput -= 1f;
         }
 
         if (Keyboard.current.lKey.isPressed)
         {
-            moveDirection.x += 1f;
+            horizontalInput += 1f;
         }
 
         if (Keyboard.current.iKey.isPressed)
         {
-            moveDirection.z += 1f;
+            verticalInput += 1f;
         }
 
         if (Keyboard.current.kKey.isPressed)
         {
-            moveDirection.z -= 1f;
+            verticalInput -= 1f;
         }
+    }
+
+    private void MoveClaw()
+    {
+        Vector3 moveDirection = new Vector3(
+            horizontalInput,
+            0f,
+            verticalInput
+        );
 
         if (moveDirection == Vector3.zero)
-        {
-            UpdateTargetZonePosition();
             return;
-        }
 
         moveDirection.Normalize();
 
@@ -93,8 +126,6 @@ public class ClawPositionController : MonoBehaviour
         );
 
         claw.position = nextClawPosition;
-
-        UpdateTargetZonePosition();
     }
 
     private void UpdateTargetZonePosition()
@@ -107,5 +138,42 @@ public class ClawPositionController : MonoBehaviour
             targetZoneY,
             claw.position.z
         );
+    }
+
+    private void UpdateLeverVisuals()
+    {
+        if (horizontalLeverPivot != null)
+        {
+            Quaternion targetRotation =
+                Quaternion.Euler(
+                    0f,
+                    0f,
+                    -horizontalInput * leverTiltAngle
+                );
+
+            horizontalLeverPivot.localRotation =
+                Quaternion.Slerp(
+                    horizontalLeverPivot.localRotation,
+                    targetRotation,
+                    leverReturnSpeed * Time.deltaTime
+                );
+        }
+
+        if (verticalLeverPivot != null)
+        {
+            Quaternion targetRotation =
+                Quaternion.Euler(
+                    verticalInput * leverTiltAngle,
+                    0f,
+                    0f
+                );
+
+            verticalLeverPivot.localRotation =
+                Quaternion.Slerp(
+                    verticalLeverPivot.localRotation,
+                    targetRotation,
+                    leverReturnSpeed * Time.deltaTime
+                );
+        }
     }
 }
