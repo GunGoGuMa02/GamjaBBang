@@ -13,6 +13,13 @@ public class ClawPositionController : MonoBehaviour
     [Tooltip("집게 아래의 감지 구역 오브젝트입니다.")]
     public Transform targetZone;
 
+    [Header("Physical Lever Inputs")]
+    [Tooltip("좌우 이동을 담당하는 물리 레버 입력입니다.")]
+    public PhysicalLeverInput horizontalPhysicalLever;
+
+    [Tooltip("앞뒤 이동을 담당하는 물리 레버 입력입니다. 아직 없으면 비워둬도 됩니다.")]
+    public PhysicalLeverInput verticalPhysicalLever;
+
     [Header("Lever Visuals")]
     [Tooltip("좌우 이동 레버의 회전 중심입니다.")]
     public Transform horizontalLeverPivot;
@@ -57,16 +64,13 @@ public class ClawPositionController : MonoBehaviour
         if (claw == null)
             return;
 
-        if (Keyboard.current == null)
-            return;
-
         bool canMoveClaw =
             clawMovement == null ||
             clawMovement.IsMoving == false;
 
         if (canMoveClaw)
         {
-            ReadKeyboardInput();
+            ReadInputs();
             MoveClaw();
         }
 
@@ -74,26 +78,42 @@ public class ClawPositionController : MonoBehaviour
         UpdateLeverVisuals();
     }
 
-    private void ReadKeyboardInput()
+    private void ReadInputs()
     {
-        if (Keyboard.current.jKey.isPressed)
+        if (horizontalPhysicalLever != null)
         {
-            horizontalInput -= 1f;
+            horizontalInput =
+                -horizontalPhysicalLever.value;
+        }
+        else if (Keyboard.current != null)
+        {
+            if (Keyboard.current.jKey.isPressed)
+            {
+                horizontalInput -= 1f;
+            }
+
+            if (Keyboard.current.lKey.isPressed)
+            {
+                horizontalInput += 1f;
+            }
         }
 
-        if (Keyboard.current.lKey.isPressed)
+        if (verticalPhysicalLever != null)
         {
-            horizontalInput += 1f;
+            verticalInput =
+                verticalPhysicalLever.value;
         }
-
-        if (Keyboard.current.iKey.isPressed)
+        else if (Keyboard.current != null)
         {
-            verticalInput += 1f;
-        }
+            if (Keyboard.current.iKey.isPressed)
+            {
+                verticalInput += 1f;
+            }
 
-        if (Keyboard.current.kKey.isPressed)
-        {
-            verticalInput -= 1f;
+            if (Keyboard.current.kKey.isPressed)
+            {
+                verticalInput -= 1f;
+            }
         }
     }
 
@@ -108,7 +128,10 @@ public class ClawPositionController : MonoBehaviour
         if (moveDirection == Vector3.zero)
             return;
 
-        moveDirection.Normalize();
+        moveDirection = Vector3.ClampMagnitude(
+            moveDirection,
+            1f
+        );
 
         Vector3 nextClawPosition =
             claw.position + moveDirection * moveSpeed * Time.deltaTime;
@@ -142,7 +165,7 @@ public class ClawPositionController : MonoBehaviour
 
     private void UpdateLeverVisuals()
     {
-        if (horizontalLeverPivot != null)
+        if (horizontalPhysicalLever == null && horizontalLeverPivot != null)
         {
             Quaternion targetRotation =
                 Quaternion.Euler(
@@ -159,7 +182,7 @@ public class ClawPositionController : MonoBehaviour
                 );
         }
 
-        if (verticalLeverPivot != null)
+        if (verticalPhysicalLever == null && verticalLeverPivot != null)
         {
             Quaternion targetRotation =
                 Quaternion.Euler(
