@@ -593,7 +593,7 @@ GameObject:
   - component: {fileID: 497171712}
   - component: {fileID: 497171715}
   - component: {fileID: 497171714}
-  - component: {fileID: 497171713}
+  - component: {fileID: 497171716}
   m_Layer: 0
   m_Name: LeverHandle
   m_TagString: Untagged
@@ -611,32 +611,11 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.9, z: 0}
-  m_LocalScale: {x: 0.2, y: 1.8, z: 0.2}
+  m_LocalScale: {x: 0.2, y: 1.6, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1793351858}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!65 &497171713
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 497171711}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &497171714
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -694,6 +673,29 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 497171711}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!136 &497171716
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 497171711}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.15
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &505702789
 GameObject:
   m_ObjectHideFlags: 0
@@ -1586,6 +1588,8 @@ MonoBehaviour:
   claw: {fileID: 1852635550}
   clawMovement: {fileID: 1852635551}
   targetZone: {fileID: 600524562}
+  horizontalPhysicalLever: {fileID: 1793351862}
+  verticalPhysicalLever: {fileID: 0}
   horizontalLeverPivot: {fileID: 1793351858}
   verticalLeverPivot: {fileID: 13619603}
   leverTiltAngle: 25
@@ -1845,7 +1849,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.9, z: 0}
-  m_LocalScale: {x: 0.19999999, y: 1.8, z: 0.19999999}
+  m_LocalScale: {x: 0.19999999, y: 1.6, z: 0.19999999}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 13619603}
@@ -1957,8 +1961,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1573215877}
   - {fileID: 541870158}
+  - {fileID: 1573215877}
   m_Father: {fileID: 874157917}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1160234425
@@ -3493,6 +3497,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1793351858}
+  - component: {fileID: 1793351861}
+  - component: {fileID: 1793351862}
   m_Layer: 0
   m_Name: LeverHandlePivot
   m_TagString: Untagged
@@ -3516,6 +3522,48 @@ Transform:
   - {fileID: 497171712}
   m_Father: {fileID: 541870158}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &1793351861
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793351857}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0.5
+  m_AngularDamping: 2
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 1
+  m_Constraints: 0
+  m_CollisionDetection: 1
+--- !u!114 &1793351862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1793351857}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9e8e15c2f8f6cb14ea3eca26eb54fb7d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PhysicalLeverInput
+  localAxis: {x: 0, y: 0, z: 1}
+  maxAngle: 25
+  value: 0
 --- !u!1 &1843422078
 GameObject:
   m_ObjectHideFlags: 0
