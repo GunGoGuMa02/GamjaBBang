@@ -2602,7 +2602,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1527644805}
+  - {fileID: 2141329749}
   m_Father: {fileID: 1578816170}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1448064763 stripped
@@ -2922,7 +2922,7 @@ Transform:
   m_Children:
   - {fileID: 1498540024}
   - {fileID: 1474703302}
-  m_Father: {fileID: 1393118367}
+  m_Father: {fileID: 2141329749}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!23 &1527644806
 MeshRenderer:
@@ -3033,6 +3033,7 @@ GameObject:
   - component: {fileID: 1578816162}
   - component: {fileID: 1578816171}
   - component: {fileID: 1578816172}
+  - component: {fileID: 1578816173}
   m_Layer: 0
   m_Name: Player (1)
   m_TagString: Untagged
@@ -3086,7 +3087,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578816161}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7b0b127cf7eb56b49bc77112d258f15c, type: 3}
   m_Name: 
@@ -3107,7 +3108,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1578816161}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7e272e8936683054eb188634e00bb624, type: 3}
   m_Name: 
@@ -3265,6 +3266,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerGrabController
   isGrabbed: 0
   grabPositionOffset: {x: 0, y: 0, z: 0}
+--- !u!114 &1578816173
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1578816161}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59c09b88349279b46bef70b3888be5c1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerMotionVisual
+  motionPivot: {fileID: 2141329749}
+  playerMovement: {fileID: 0}
+  stunController: {fileID: 0}
+  grabController: {fileID: 0}
+  forwardLeanAngle: 8
+  sideSwayAngle: 5
+  bobHeight: 0.06
+  bobSpeed: 8
+  returnSpeed: 10
 --- !u!1 &1590417132
 GameObject:
   m_ObjectHideFlags: 0
@@ -4611,6 +4633,38 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 604712594}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &2141329748
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2141329749}
+  m_Layer: 0
+  m_Name: MotionPivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2141329749
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2141329748}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1527644805}
+  m_Father: {fileID: 1393118367}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &2143276139 stripped
 Transform:
