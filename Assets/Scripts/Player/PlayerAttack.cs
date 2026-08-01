@@ -33,6 +33,7 @@ public class PlayerAttack : MonoBehaviour
     private Coroutine attackMotionCoroutine;
     private StunController stunController;
     private PlayerGrabController grabController;
+    private PlayerMotionVisual motionVisual;
 
     private void Start()
     {
@@ -43,6 +44,7 @@ public class PlayerAttack : MonoBehaviour
 
         stunController = GetComponent<StunController>();
         grabController = GetComponent<PlayerGrabController>();
+        motionVisual = GetComponent<PlayerMotionVisual>();
     }
 
     private void Update()
@@ -60,6 +62,7 @@ public class PlayerAttack : MonoBehaviour
         {
             PerformAttack();
             PlayAttackMotion();
+            PlayMotionPivotAttackMotion();
         }
     }
 
@@ -218,6 +221,14 @@ public class PlayerAttack : MonoBehaviour
             StartCoroutine(
                 AttackMotionRoutine()
             );
+    }
+
+    private void PlayMotionPivotAttackMotion()
+    {
+        if (motionVisual == null)
+            return;
+
+        motionVisual.PlayAttackMotion();
     }
 
     private IEnumerator AttackMotionRoutine()
